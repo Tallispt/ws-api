@@ -1,12 +1,13 @@
-from ws_api import mongo
+from ..database import mongo
 
-users = mongo.db.users
+# users = mongo.db.users
 
 def find_by_username(username):
-    return users.find_one({"username": username})
+    return mongo.db.users.find_one({"username": username})
+    return
 
 def find_by_email(email):
-    return users.find_one({"email": email})
+    return mongo.db.users.find_one({"email": email})
 
 def insert(username, email, hash):
-    return users.insert_one({"username": username, "email": email, "password": hash })
+    return mongo.db.users.insert_one({"username": username, "email": email, "password": hash })

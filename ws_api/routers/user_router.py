@@ -1,12 +1,12 @@
-from flask import Blueprint, request
 import bcrypt
-from ws_api.utils.decode_utils import parse_bytes
-from ws_api.repositories import user_repository, session_repository
 from uuid import uuid4
 from http import HTTPStatus
+from flask import Blueprint, request
+
+from ws_api.utils.decode_utils import parse_bytes
+from ws_api.repositories import user_repository, session_repository
 
 user_bp = Blueprint("users", __name__, url_prefix="")
-# TODO architecture (Routes, Controllers and Services) - Repositories DONE
 
 @user_bp.route('/sign-up', methods=['POST'])
 def create_user():

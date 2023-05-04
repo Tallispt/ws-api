@@ -1,5 +1,3 @@
-from pymongo import MongoClient
-from ws_api.utils.loadenv import config
+from flask_pymongo import PyMongo
 
-client = MongoClient(config['MONGO_URI'])
-mongo = client[config['MONGO_DB_NAME']]
+mongo = PyMongo()
