@@ -1,5 +1,5 @@
-from ws_api import create_app
-from ws_api.loadenv import config
+from . import create_app
+from .loadenv import config
 
 app = create_app()
 

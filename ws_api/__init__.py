@@ -3,10 +3,10 @@ from flask_cors import CORS
 from .loadenv import config
 from .database import mongo
 
-from .routers.health_router import health_bp
-from .routers.user_router import user_bp
-from .routers.session_router import session_bp
-from .routers.data_router import data_bp
+from .controllers.health import health_bp
+from .controllers.user import user_bp
+from .controllers.session import session_bp
+from .controllers.data import data_bp
 
 def create_app():
     app = Flask(__name__)
