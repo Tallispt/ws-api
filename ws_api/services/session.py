@@ -1,55 +1,43 @@
 from uuid import uuid4
 from flask import request
-from bson import ObjectId
 
-from ..utils.decode import check_password_parity
+from ..utils.decode import check_password_parity, parse_json
 from ..repositories import session, user
 
 def create_session():
   user_data = request.json
-  username, password = user_data.values()
 
   #TODO Validate username and password
   
+  if 'username' not in user_data or 'password' not in user_data:
+    raise Exception("Unable to authenticate")
+  
+  username, password = user_data.values()
+
   existing_user = user.find_by_username(username)
 
   if(not existing_user):
     existing_user = user.find_by_email(username)
   if(not existing_user):
     raise Exception('Login_error')
-
+  
   user_id, user_username, user_email, user_password = existing_user.values()
+
+  # TODO Session rules
 
   check = check_password_parity(password, user_password)
 
   if(not check):
     raise Exception('Login_error')
 
-  # TODO Session rules
+  uuid_obj = str(uuid4())
+  session.insert(user_id, uuid_obj)
 
-  uuid_obj = uuid4()
-  # data = {
-  #   "user": user_id,
-  #   "token": uuid_obj,
-  #   "isValid": True
-  # }
-  # value = session.insert(data)
-  # print(value)
-  # _, username, token, isValid, _id = data.values()
-
-  # reposponse = {
-  #   "id": ObjectId(_id),
-  #   "username": username,
-  #   "token": str(token),
-  #   "isValid": isValid
-  # }
-
-  # return reposponse
-  return {}
+  return {'user': user_username, 'token': uuid_obj}
 
 def login():
-  d = request.json
-  if 'username' not in d or 'password' not in d:
-    raise Exception("Unable to authenticate")
-  
+  user_data = request.json
   return {}
+
+def delete():
+  return session.delete_all()

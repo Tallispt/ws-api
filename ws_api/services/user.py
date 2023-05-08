@@ -1,8 +1,7 @@
 import bcrypt
-# from uuid import uuid4
 from flask import request
 
-from ..utils.decode import parse_bytes, parse_json
+from ..utils.decode import encode_password
 from ..repositories import user
 
 def create_user():
@@ -17,9 +16,8 @@ def create_user():
     if(existing_user or existing_email):
         raise Exception ("Conflict_error")
 
-    hash = bcrypt.hashpw(parse_bytes(password), bcrypt.gensalt())
+    hash = encode_password(password)
 
-    user.insert(username, email, hash.decode('utf-8'))
+    user.insert(username, email, hash)
 
-    response = {"username": username}
-    return response
+    return {"username": username}
