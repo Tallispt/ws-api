@@ -1,10 +1,10 @@
-from flask import request, make_response, jsonify
+from flask import request
 
 from ..repositories import data
 
 def find_data():
-  data_ = data.find()
-  return jsonify({'page' : data_})
+  all_data = data.find()
+  return all_data
 
 def create_data():
   data_ = request.get_json()

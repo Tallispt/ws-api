@@ -1,19 +1,20 @@
-import bcrypt
 from flask import request
 
 from ..utils.decode import encode_password
 from ..repositories import user
+from ..middlewares.validation import validation
+from ..schemas.user import UserSchema
 
 def create_user():
-    user_data = request.json
-    username, email, password = user_data.values()
-
-    # # TODO Validate username and password
-    # # https://stackoverflow.com/questions/61644396/flask-how-to-make-validation-on-request-json-and-json-schema
+    body = validation(UserSchema)
     
-    existing_user = user.find_by_username(username)
-    existing_email = user.find_by_email(email)
-    if(existing_user or existing_email):
+    username = body['username'] 
+    email = body['email']
+    password = body['password']
+    
+    db_user = user.find_by_username(username)
+    db_email = user.find_by_email(email)
+    if(db_user == {} or db_email == {}):
         raise Exception ("Conflict_error")
 
     hash = encode_password(password)

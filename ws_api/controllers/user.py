@@ -1,5 +1,6 @@
 from flask import Blueprint, request
 from http import HTTPStatus
+from marshmallow import ValidationError
 
 from ..services.user import create_user
 
@@ -11,9 +12,11 @@ def post_user():
   try:
     response = create_user()
     return response, HTTPStatus.CREATED
-  
-  except Exception as e:
-    if(str(e) == 'Conflict_error'):
-      return {'error': "User already exists!"}, HTTPStatus.CONFLICT
     
-    return {'error': str(e)}, HTTPStatus.BAD_REQUEST
+  except Exception or ValidationError as e:
+      if(type(e) == ValidationError):
+        return {'error': str(e)}, HTTPStatus.FORBIDDEN
+      
+      if(str(e) == 'Conflict_error'):
+        return {'error': "User already exists!"}, HTTPStatus.CONFLICT
+      return {'errrr': str(e)}, HTTPStatus.BAD_REQUEST

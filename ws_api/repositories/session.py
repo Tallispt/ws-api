@@ -2,14 +2,15 @@ import datetime as dt
 from bson import ObjectId
 
 from..database import mongo
-from ..utils.decode import parse_json
+from ..schemas.session import SessionSchema
 
 def find_by_session_id(session_id):
-  user = mongo.db.sessions.find_one({"_id": ObjectId(session_id)})
-  return parse_json(user)
+  session = mongo.db.sessions.find_one({"_id": ObjectId(session_id)})
+  return SessionSchema().dumps(session)
 
 def find_by_token(token):
-  return mongo.db.sessions.find_one({'token': token})
+  session = mongo.db.sessions.find_one({'token': token})
+  return SessionSchema().dumps(session)
 
 def insert(user_id, uuid_obj):
   return mongo.db.sessions.insert_one({

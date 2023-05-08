@@ -1,29 +1,24 @@
 from uuid import uuid4
 from flask import request
 
-from ..utils.decode import check_password_parity, parse_json
+from ..utils.decode import check_password_parity
 from ..repositories import session, user
+from ..schemas.user import UserSchema, SignInSchema
+from ..middlewares.validation import validation
 
 def create_session():
-  user_data = request.json
+  body = validation(SignInSchema)
+  username = body['username']
+  password = body['password']
 
-  #TODO Validate username and password
-  
-  if 'username' not in user_data or 'password' not in user_data:
-    raise Exception("Unable to authenticate")
-  
-  username, password = user_data.values()
+  db_user = user.find_by_username(username)
 
-  existing_user = user.find_by_username(username)
-
-  if(not existing_user):
-    existing_user = user.find_by_email(username)
-  if(not existing_user):
+  if(not db_user):
+    db_user = user.find_by_email(username)
+  if(not db_user):
     raise Exception('Login_error')
   
-  user_id, user_username, user_email, user_password = existing_user.values()
-
-  # TODO Session rules
+  user_id, user_username, user_email, user_password = db_user.values()
 
   check = check_password_parity(password, user_password)
 
@@ -34,10 +29,6 @@ def create_session():
   session.insert(user_id, uuid_obj)
 
   return {'user': user_username, 'token': uuid_obj}
-
-def login():
-  user_data = request.json
-  return {}
 
 def delete():
   return session.delete_all()
