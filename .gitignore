@@ -7,6 +7,7 @@ build
 _build
 .cache
 *.so
+__pycache__/
 
 # Installer logs
 pip-log.txt
