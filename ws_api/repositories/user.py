@@ -16,4 +16,4 @@ def insert(username, email, hash):
         "username": username, 
         "email": email, 
         "password": hash, 
-        "created_at": dt.datetime.now() })
+         "created_at": dt.datetime.now() })

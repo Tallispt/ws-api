@@ -12,9 +12,9 @@ SignUpSchema = Schema.from_dict({
 })
 
 UserSchema = Schema.from_dict({
-    "_id": fields.UUID(allow_none=True),
-    "username": fields.String(required=True),
-    "email": fields.Email(required=True),
-    "password": fields.String(required=True),
-    "created_at": fields.DateTime(allow_none=True)
+    "_id": fields.UUID(),
+    "username": fields.String(),
+    "email": fields.Email(),
+    "password": fields.String(),
+    "created_at": fields.DateTime()
 })

@@ -1,7 +1,17 @@
-from..database import mongo
+import datetime as dt
+from bson.json_util import dumps
+
+from ..database import mongo
 
 def find():
-  return mongo.db.data.find()
+  result = mongo.db.data.find()
+  list_cur = list(result)
+  data = dumps(list_cur)
+  return data
 
-def insert(data):
-  return mongo.db.data.insert_one(data)
+def insert(name, file):
+  return mongo.db.data.insert_one({
+    "name": name,
+    "file": file,
+    "created_at": dt.datetime.now()
+  })

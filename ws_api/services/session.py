@@ -1,15 +1,18 @@
 from uuid import uuid4
-from flask import request
+from marshmallow import ValidationError
 
 from ..utils.decode import check_password_parity
 from ..repositories import session, user
-from ..schemas.user import UserSchema, SignInSchema
+from ..schemas.user import SignInSchema
 from ..middlewares.validation import validation
 
 def create_session():
   body = validation(SignInSchema)
   username = body['username']
   password = body['password']
+
+  if(username == "" or password == ""):
+    raise ValidationError("Not allowed blanck values")
 
   db_user = user.find_by_username(username)
 

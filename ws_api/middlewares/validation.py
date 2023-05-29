@@ -22,7 +22,7 @@ def validation(schema):
     try:
         data = request.json
         result =  schema().load(data)
-    
+           
     except ValidationError as e:
       raise ValidationError(e.messages)
     
