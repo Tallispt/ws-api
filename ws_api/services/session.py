@@ -11,15 +11,12 @@ def create_session():
   username = body['username']
   password = body['password']
 
-  if(username == "" or password == ""):
-    raise ValidationError("Not allowed blanck values")
-
   db_user = user.find_by_username(username)
 
   if(not db_user):
     db_user = user.find_by_email(username)
   if(not db_user):
-    raise Exception('Login_error')
+    raise Exception('Login error')
   
   user_id, user_username, user_email, user_password = db_user.values()
 
@@ -31,7 +28,7 @@ def create_session():
   uuid_obj = str(uuid4())
   session.insert(user_id, uuid_obj)
 
-  return {'user': user_username, 'token': uuid_obj}
+  return {'userId': user_id, 'user': user_username, 'token': uuid_obj}
 
 def delete():
   return session.delete_all()
