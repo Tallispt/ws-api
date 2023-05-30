@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint
 from http import HTTPStatus
 from marshmallow import ValidationError
 
@@ -19,4 +19,4 @@ def post_user():
       
       if(str(e) == 'Conflict_error'):
         return {'error': "User already exists!"}, HTTPStatus.CONFLICT
-      return {'errrr': str(e)}, HTTPStatus.BAD_REQUEST
+      return {'error': str(e)}, HTTPStatus.BAD_REQUEST

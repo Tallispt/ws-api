@@ -22,6 +22,9 @@ def validation(schema):
     try:
         data = request.json
         result =  schema().load(data)
+        for item in result:
+           if(result[item] == ""):
+            raise ValidationError("Not allowed blanck value ['" + item + "']")
            
     except ValidationError as e:
       raise ValidationError(e.messages)
