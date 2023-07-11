@@ -1,14 +1,18 @@
-from flask_httpauth import HTTPTokenAuth
+from functools import wraps
+from http import HTTPStatus
+from flask import request
 
-from ..repositories import session
-from ..utils.decode import parse_json
+from ..services.session import auth_session
 
-token_auth = HTTPTokenAuth(scheme='Bearer')
-
-@token_auth.verify_token
-def verify_token(token):
-    user = session.find_by_token(token)
-    if(user and user['is_valid']):
-        print(user['is_valid'])
-        return {'user'}
-    return None
+def token_required(func):
+    @wraps(func)
+    def decorated(*args, **kwargs):
+        token = request.headers["Authorization"].split(" ")[1]
+        
+        try:
+            auth_session(token)
+            return func(*args, **kwargs)
+        except Exception as e: 
+            return {'error': str(e)}, HTTPStatus.UNAUTHORIZED
+        
+    return decorated

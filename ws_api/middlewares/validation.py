@@ -27,6 +27,7 @@ def validation(schema):
             raise ValidationError("Not allowed blanck value ['" + item + "']")
            
     except ValidationError as e:
+      print(e)
       raise ValidationError(e.messages)
     
     return result
