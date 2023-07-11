@@ -12,16 +12,18 @@ def post_session():
 
     try:
         response = session.create_session()
+        print(response)
         return response, HTTPStatus.OK
     
     except Exception or ValidationError as e:
+      print(e)
       
       if(type(e) == ValidationError):
         return {'error': str(e)}, HTTPStatus.FORBIDDEN
       
       if(str(e) == 'Login_error'):
           return {'error': "Unauthorazed access!"}, HTTPStatus.UNAUTHORIZED
-      return {'errrr': str(e)}, HTTPStatus.BAD_REQUEST
+      return {'error': str(e)}, HTTPStatus.BAD_REQUEST
     
 @session_bp.route('', methods=['DELETE'])
 def delete_session():

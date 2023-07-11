@@ -8,10 +8,9 @@ user_bp = Blueprint("users", __name__, url_prefix="/user")
 
 @user_bp.route('', methods=['POST'])
 def post_user():
-  
   try:
     response = create_user()
-    return response, HTTPStatus.CREATED
+    return response, HTTPStatus.OK
     
   except Exception or ValidationError as e:
       if(type(e) == ValidationError):

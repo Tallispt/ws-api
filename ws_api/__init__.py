@@ -11,7 +11,8 @@ from .controllers.data import data_bp
 def create_app():
     app = Flask(__name__)
     CORS(app)
-
+    
+    app.config['SECRET_KEY'] = config['JWT_SECRET_KEY']
     app.config['MONGO_URI'] = config['MONGO_URI']
     mongo.init_app(app)
 
