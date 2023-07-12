@@ -24,5 +24,4 @@ def post_data():
         return response, HTTPStatus.CREATED
     
     except Exception as e:
-        print(e)
         return {'error': str(e)}, HTTPStatus.BAD_REQUEST

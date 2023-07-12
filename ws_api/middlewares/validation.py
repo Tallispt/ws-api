@@ -6,7 +6,6 @@ from marshmallow import ValidationError
 def validation(func, schema):
     @wraps(func)
     def decorated(*args, **kwargs):
-        print('foi')
         try:
             data = request.json
             result = schema().load(data)
