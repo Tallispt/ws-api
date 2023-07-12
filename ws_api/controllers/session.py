@@ -1,13 +1,17 @@
 from http import HTTPStatus
 from flask import Blueprint
-from marshmallow import ValidationError
+from functools import partial
 
 from ..services import session
+from ..middlewares.validation import validation
+from ..schemas.user import SignInSchema
 
 session_bp = Blueprint('session', __name__, url_prefix='/session')
 
+validate = partial(validation, schema = SignInSchema)
+
 @session_bp.route('', methods=['POST'])
-# @validation(SignInSchema)
+@validate
 def post_session():
 
     try:
@@ -15,22 +19,8 @@ def post_session():
         print(response)
         return response, HTTPStatus.OK
     
-    except Exception or ValidationError as e:
-      print(e)
-      
-      if(type(e) == ValidationError):
-        return {'error': str(e)}, HTTPStatus.FORBIDDEN
-      
+    except Exception as e:
       if(str(e) == 'Login_error'):
           return {'error': "Unauthorazed access!"}, HTTPStatus.UNAUTHORIZED
-      return {'error': str(e)}, HTTPStatus.BAD_REQUEST
-    
-@session_bp.route('', methods=['DELETE'])
-def delete_session():
-
-    try:
-        session.delete()
-        return {}, HTTPStatus.OK
-    
-    except Exception as e:
+      
       return {'error': str(e)}, HTTPStatus.BAD_REQUEST
