@@ -23,14 +23,14 @@ def create_session():
     raise Exception('Login_error')
 
   token = jwt.encode({
-    'user': db_username,
+    'username': db_username,
     'userId': str(db_id),
     'expiration': str(datetime.utcnow() + timedelta(days=2))
   },
     config['JWT_SECRET_KEY']
   )
 
-  return {'token': token}
+  return {'username': db_username, 'userId': str(db_id), 'token': token}
 
 def auth_session(token):
   if not token:
