@@ -16,7 +16,6 @@ def post_session():
 
     try:
         response = session.create_session()
-        print(response)
         return response, HTTPStatus.OK
     
     except Exception as e:
