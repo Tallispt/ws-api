@@ -1,16 +1,13 @@
 import jwt
+from flask import request
 from datetime import datetime, timedelta
 from ..loadenv import config
 
 from ..utils.decode import check_password_parity
 from ..repositories import user
-from ..schemas.user import SignInSchema
-from ..middlewares.validation import validation
 
 def create_session():
-  body = validation(SignInSchema)
-  username = body['username']
-  password = body['password']
+  username, password = request.json.values()
 
   db_user = user.find_by_username(username)
 
