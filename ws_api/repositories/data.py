@@ -1,17 +1,30 @@
 import datetime as dt
-from bson.json_util import dumps
+from bson import ObjectId
 
 from ..database import mongo
 
-def find():
-  result = mongo.db.data.find()
-  list_cur = list(result)
-  data = dumps(list_cur)
-  return data
+def find_by_id(id):
+  return mongo.db.data.find_one({},{"_id": ObjectId(id)})
 
-def insert(name, file):
+def find_by_user_id(id):
+  return mongo.db.data.find({},{"user_id": ObjectId(id)})
+
+def insert(user_id, file):
   return mongo.db.data.insert_one({
-    "name": name,
+    "user_id": ObjectId(user_id),
     "file": file,
     "created_at": dt.datetime.now()
+  })
+
+def update(id, user_id, file):
+  return mongo.db.data.find_one_and_update({
+    "_id": ObjectId(id), 
+    'user_id': ObjectId(user_id)
+  },
+  {'file': file})
+
+def delete(id, user_id):
+  return mongo.db.data.find_one_and_delete({
+    "_id": ObjectId(id), 
+    'user_id': ObjectId(user_id)
   })
