@@ -17,7 +17,11 @@ flask-pymongo = "^2.3.0"
 marshmallow = "^3.19.0"
 flask-httpauth = "^4.8.0"
 pyjwt = "^2.7.0"
+flask-compress = "^1.13"
 
+[tool.poetry.scripts]
+start = "ws_api.__main__:main"
+seed = "ws_api.seed.main:seed_all"
 
 [build-system]
 requires = ["poetry-core"]

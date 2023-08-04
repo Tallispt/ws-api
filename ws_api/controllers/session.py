@@ -3,12 +3,12 @@ from flask import Blueprint
 from functools import partial
 
 from ..services import session
-from ..middlewares.validation import validation
+from ..middlewares.validation import validate_body
 from ..schemas.user import SignInSchema
 
 session_bp = Blueprint('session', __name__, url_prefix='/session')
 
-validate = partial(validation, schema = SignInSchema)
+validate = partial(validate_body, schema = SignInSchema)
 
 @session_bp.route('', methods=['POST'])
 @validate
