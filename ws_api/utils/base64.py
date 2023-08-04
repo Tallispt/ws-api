@@ -9,6 +9,9 @@ def readb64(uri):
    return img
 
 def encode64(img):
-  _, frame = cv.imencode(".jpeg", img)
-  data = str(base64.b64encode(frame)).replace("b'", 'data:image/jpeg;base64,')
-  return data
+   retval, buffer = cv.imencode('.jpg', img)
+   if not retval:
+      raise Exception("Failed to encode the image to Base64.")
+
+   base64_string = 'data:image/jpeg;base64,' + base64.b64encode(buffer).decode('utf-8')
+   return base64_string

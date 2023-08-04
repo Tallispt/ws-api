@@ -48,3 +48,5 @@ def auth_session(token):
 
   if(not db_user or db_user["username"] != username):
     raise Exception('Unauthorized_access_error')
+  
+  return user_id
