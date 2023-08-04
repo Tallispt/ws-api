@@ -10,6 +10,7 @@ from .controllers.session import session_bp
 from .controllers.data import data_bp
 from .controllers.mode import mode_bp
 from .controllers.page import page_bp
+from .controllers.result import result_bp
 
 def create_app():
     app = Flask(__name__)
@@ -28,5 +29,6 @@ def create_app():
     app.register_blueprint(data_bp)
     app.register_blueprint(mode_bp)
     app.register_blueprint(page_bp)
+    app.register_blueprint(result_bp)
 
     return app
