@@ -8,6 +8,8 @@ _build
 .cache
 *.so
 __pycache__/
+**/__pycache__/
+**/.*.data.cpython-310.pyc
 
 # Installer logs
 pip-log.txt
