@@ -1,79 +1,72 @@
 from flask import request
-from bson import json_util
 
-from ..utils import base64, image
-from ..repositories import data
-# import cv2
-
-def generate(data):
-  n = 158415
-  data_chunks = [data[i:i+n] for i in range(0, len(data), n)]
-  for split_data in data_chunks:
-      yield split_data
+from ..repositories import data, result, mode
+from ..utils import cammel_snake, bucket
+from ..utils.image_manipulator import return_detected_circles
 
 def detect_sensor():
+  file = request.files['file'].read()
+  form = request.form
+
+#TODO Transform multiple parameters into dictionaty
+  pts, drawn_img = return_detected_circles(
+    file,
+    kernel = (int(form['kernel']), int(form['kernel'])),
+    min_dist = int(form['minDist']),
+    param_1 = int(form['param1']),
+    param_2 = int(form['param2']),
+    min_radius = int(form['minRadius']),
+    max_radius = int(form['maxRadius']),
+    radius_percent = int(form['radiusPercent'])
+    )
+
+  img_blob = bucket.upload_image(file)
+  drawn_img_blob = bucket.upload_image(drawn_img)
+
+  return {
+    'detected_circles': pts.tolist(), 
+    'originalImage': img_blob.public_url, 
+    'drawnImage': drawn_img_blob.public_url
+    }
+
+def delete_sensor():
   body = request.json
 
-  file = body['file']
-  img = base64.readb64(file)
+  bucket.delete_image(body['originalImage'])
+  bucket.delete_image(body['drawnImage'])
 
-
-  new_img = image.detect_contours(img)
-
-  new_file = base64.encode64(new_img)
-
-  return generate(new_file)
-
-def find_data(id):
-  if(not id):
-    raise Exception()
-  
-  user_data = data.find_by_id(id)
-
-  if(not user_data):
-    raise Exception()
-  
-  list_cur = list(user_data)
-  response = json_util.dumps(list_cur)
-  return response
-
-def find_user_data():
-  user_id = request.environ['user_id']
-  
-  user_data = data.find_by_id(user_id)
-  
-  if(not user_data):
-    return []
-  
-  list_cur = list(user_data)
-  response = json_util.dumps(list_cur)
-  return response
+  return {}
 
 def create_data():
   user_id = request.environ['user_id']
 
   body = request.json
-  file = body['file']
+  _body = cammel_snake.convert_json(body)
 
-  # processar os dados e inserir no banco
+  mode_exists = mode.find_by_id(_body["mode_id"], user_id)
+  if(not mode_exists):
+     raise Exception("Mode_error")
 
-  new_data = data.insert(user_id, file)
+  #TODO processar os dados
+  info = _body["files"]
 
-  return {"id": str(new_data.inserted_id)}
+  #TODO info = {...}
 
-def update_data(id):
-  user_id = request.environ['user_id']
+  #TODO inserir no banco
+  new_data = data.insert(user_id, info)
 
-  body = request.json
-  file = body['file']
+  result_data = {
+    "data_id": new_data.inserted_id,
+    "mode_id": _body["mode_id"],
+    "name": _body["name"],
+    "cover": _body["files"][0],
+    "location": _body["location"]
+  }
 
-  data.update(id, user_id, file)
+  new_result = result.insert(user_id, result_data)
 
-  return {}
+  return {"resultId": str(new_result.inserted_id)}
 
-def remove_data(id):
-  user_id = request.environ['user_id']
-
-  data.delete(id, user_id)
-
+#TODO Se mode_id e files não forem iguais, refazer result + data (POST)
+def update_data():
   return {}
