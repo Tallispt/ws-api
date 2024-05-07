@@ -19,7 +19,7 @@ def find_user_modes():
 def find_mode(id):
   user_id = request.environ['user_id']
 
-  mode_data = mode.find_by_id(id, user_id)
+  mode_data = mode.find_by_id(user_id, id)
   if(not mode_data):
     return []
 
@@ -30,15 +30,14 @@ def create_mode():
   user_id = request.environ['user_id']
 
   body = request.json
+  _body = cammel_snake.convert_json(body)
 
-  title_exists = mode.find_by_title(body["title"], user_id)
+  title_exists = mode.find_by_title(_body["title"], user_id)
 
   if(title_exists):
     raise Exception("Conflict_error")
 
-  data = cammel_snake.convert_json(body)
-
-  new_mode = mode.insert(data, user_id)
+  new_mode = mode.insert(_body, user_id)
 
   return {"modeId": str(new_mode.inserted_id)}
 
@@ -50,13 +49,13 @@ def update_mode(id):
   data = cammel_snake.convert_json(body)
   print(data)
 
-  updated_mode = mode.update(id, user_id, data)
+  updated_mode = mode.update(user_id, id, data)
   return {"modeId": str(updated_mode["_id"])}
 
 
 def remove_mode(id):
   user_id = request.environ['user_id']
 
-  deleted_mode = mode.delete(id, user_id)
+  deleted_mode = mode.delete(user_id, id)
 
   return {"modeId": str(deleted_mode["_id"])}
