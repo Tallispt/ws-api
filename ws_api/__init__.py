@@ -3,6 +3,7 @@ from flask_cors import CORS
 from flask_compress import Compress
 from .loadenv import config
 from .database import mongo
+from .bucket import firebase
 
 from .controllers.health import health_bp
 from .controllers.user import user_bp
@@ -18,7 +19,10 @@ def create_app():
 
     app.config['SECRET_KEY'] = config['JWT_SECRET_KEY']
     app.config['MONGO_URI'] = config['MONGO_URI']
+    app.config['CRED_PATH'] = config['CRED_PATH']
+    app.config['BUCKET_URI'] = config['BUCKET_URI']
     mongo.init_app(app)
+    firebase.init_app(app)
 
     # app.config["COMPRESS_REGISTER"] = False
     Compress().init_app(app)

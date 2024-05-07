@@ -1,46 +1,39 @@
-from flask import Blueprint, make_response, jsonify, Response
+from flask import Blueprint
 from http import HTTPStatus
 from functools import partial
 
 from ..services import data
 from ..middlewares.authorization import token_required
-from ..middlewares.validation import validate_body
-from ..schemas.data import DetectSchema, DataBodySchema
+from ..middlewares.validation import validate_body, validate_file, validate_form
+from ..schemas.data import DetectFormsBodySchema, DetectDelBodySchema, DataBodySchema
 
-validate_detection = partial(validate_body, schema = DetectSchema)
+validate_detection_file = partial(validate_file)
+validate_detection_form = partial(validate_form, schema = DetectFormsBodySchema)
+validate_detection_delete = partial(validate_body, schema = DetectDelBodySchema)
 validate = partial(validate_body, schema = DataBodySchema)
 
 data_bp = Blueprint("data", __name__, url_prefix="/data")
 
 @data_bp.route('/detect', methods=['GET', 'POST'])
 @token_required
-@validate_detection
+@validate_detection_file
+@validate_detection_form
 def detect_data():
     try:
         response = data.detect_sensor()
         return response, HTTPStatus.OK
         
     except Exception as e:
-        print(e)
         return {'error': str(e)}, HTTPStatus.BAD_REQUEST
-
-@data_bp.route('/<id>', methods=['GET'])
-@token_required
-def get_data(id):
-    try:
-        response = data.find_data(id)
-        return response, HTTPStatus.OK
     
-    except Exception as e:
-        return {'error': str(e)}, HTTPStatus.BAD_REQUEST
-
-@data_bp.route('', methods=['GET'])
+@data_bp.route('/detect', methods=['DELETE'])
 @token_required
-def get_user_data():
+@validate_detection_delete
+def delete_detect_data():
     try:
-        response = data.find_user_data()
+        response = data.delete_sensor()
         return response, HTTPStatus.OK
-    
+        
     except Exception as e:
         return {'error': str(e)}, HTTPStatus.BAD_REQUEST
     
@@ -53,25 +46,6 @@ def post_data():
         return response, HTTPStatus.CREATED
     
     except Exception as e:
-        return {'error': str(e)}, HTTPStatus.BAD_REQUEST
-    
-@data_bp.route('/<id>', methods=['PUT'])
-@token_required
-@validate
-def put_data(id):
-    try:
-        response = data.update_data(id)
-        return response, HTTPStatus.OK
-    
-    except Exception as e:
-        return {'error': str(e)}, HTTPStatus.BAD_REQUEST
-    
-@data_bp.route('/<id>', methods=['DELETE'])
-@token_required
-def delete_data(id):
-    try:
-        response = data.remove_data(id)
-        return response, HTTPStatus.OK
-    
-    except Exception as e:
+        if(str(e) == 'Mode_error'):
+            return {'error': "Mode does not exist!"}, HTTPStatus.FORBIDDEN
         return {'error': str(e)}, HTTPStatus.BAD_REQUEST

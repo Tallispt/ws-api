@@ -1,6 +1,3 @@
-import os
-from dotenv import load_dotenv
+from dotenv import dotenv_values
 
-load_dotenv()
-
-config = os.environ
+config = dotenv_values('.env.test')
