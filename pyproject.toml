@@ -4,7 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["Tallispt <tallispt@gmail.com>"]
 readme = "README.md"
-packages = [{include = "ws_api"}]
+packages = [{ include = "ws_api" }]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -19,9 +19,11 @@ flask-httpauth = "^4.8.0"
 pyjwt = "^2.7.0"
 flask-compress = "^1.13"
 firebase-admin = "^6.5.0"
+waitress = "^3.0.0"
 
 [tool.poetry.scripts]
 start = "ws_api.__main__:main"
+dev = "ws_api.__main__:test"
 seed = "ws_api.seed.main:seed_all"
 
 [build-system]

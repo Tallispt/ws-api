@@ -1,3 +1,3 @@
 from dotenv import dotenv_values
 
-config = dotenv_values('.env.test')
+config = dotenv_values()
