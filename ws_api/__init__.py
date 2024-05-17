@@ -1,9 +1,7 @@
 from flask import Flask
 from flask_compress import Compress
-from .loadenv import config
 from .database import mongo
 from .bucket import firebase
-
 from .controllers.health import health_bp
 from .controllers.user import user_bp
 from .controllers.session import session_bp
@@ -16,6 +14,7 @@ def create_app(env):
     app = Flask(__name__)
 
     if env == 'test':
+        from .loadenv import config
         from flask_cors import CORS
         CORS(app)
         app.config['SECRET_KEY'] = config['JWT_SECRET_KEY']
