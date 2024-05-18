@@ -1,5 +1,4 @@
-from flask import Blueprint, request, jsonify
-from werkzeug.exceptions import BadRequest
+from flask import Blueprint
 from http import HTTPStatus
 
 health_bp = Blueprint("health", __name__, url_prefix='/health')

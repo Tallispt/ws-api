@@ -22,7 +22,7 @@ firebase-admin = "^6.5.0"
 waitress = "^3.0.0"
 
 [tool.poetry.scripts]
-start = "ws_api.__main__:main"
+start = "waitress-serve --host 127.0.0.1 --call ws_api.__main__:main"
 dev = "ws_api.__main__:test"
 seed = "ws_api.seed.main:seed_all"
 
