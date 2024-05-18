@@ -1,8 +1,8 @@
 from flask import request
 
 from ..utils.decode import encode_password
-from ..repositories import user, mode
-from ..seed.mode_seed import Default_regression_mode
+from ..repositories import user
+# from ..seed.mode_seed import Default_regression_mode
 
 def create_user():
     username, email, password = request.json.values()
@@ -12,8 +12,6 @@ def create_user():
     hash = encode_password(password)
 
     created_user = user.insert(username, email, hash)
-
-    # mode.insert(Default_regression_mode, created_user.inserted_id)
 
     return {"username": username}
 

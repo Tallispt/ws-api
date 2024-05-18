@@ -1,6 +1,6 @@
 from flask import request
 
-from ..repositories import data, result, mode
+from ..repositories import data, result
 from ..utils import cammel_snake, bucket
 from ..utils.image_manipulator import return_detected_circles
 
@@ -43,9 +43,9 @@ def create_data():
   body = request.json
   _body = cammel_snake.convert_json(body)
 
-  mode_exists = mode.find_by_id(_body["mode_id"], user_id)
-  if(not mode_exists):
-     raise Exception("Mode_error")
+  # mode_exists = mode.find_by_id(_body["mode_id"], user_id)
+  # if(not mode_exists):
+  #    raise Exception("Mode_error")
 
   #TODO processar os dados
   info = _body["files"]
