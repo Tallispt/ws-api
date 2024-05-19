@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_compress import Compress
 from .loadenv import config
+from flask_cors import CORS
 
 from .database import mongo
 from .bucket import firebase
@@ -12,6 +13,7 @@ from .controllers.result import result_bp
 
 def create_app():
     app = Flask(__name__)
+    CORS(app)
 
     app.config['SECRET_KEY'] = config['JWT_SECRET_KEY']
     app.config['MONGO_URI'] = config['MONGO_URI']
