@@ -6,34 +6,48 @@ from ..utils.image_manipulator import return_detected_circles
 
 def detect_sensor():
   file = request.files['file'].read()
-  form = request.form
+  form_data = request.form
+  user_id = request.environ['user_id']
 
-#TODO Transform multiple parameters into dictionaty
-  pts, drawn_img = return_detected_circles(
-    file,
-    kernel = (int(form['kernel']), int(form['kernel'])),
-    min_dist = int(form['minDist']),
-    param_1 = int(form['param1']),
-    param_2 = int(form['param2']),
-    min_radius = int(form['minRadius']),
-    max_radius = int(form['maxRadius']),
-    radius_percent = int(form['radiusPercent'])
-    )
+  pts, drawn_img = return_detected_circles(file, form_data)
 
   img_blob = bucket.upload_image(file)
   drawn_img_blob = bucket.upload_image(drawn_img)
 
+  original_img_url = img_blob.public_url
+  drawn_img_url = drawn_img_blob.public_url
+  detected_circles = pts.tolist()
+
+  inserted_data = data.insert(
+    user_id=user_id, 
+    original_image=original_img_url, 
+    drawn_image=drawn_img_url, 
+    detected_circles=detected_circles,
+    info=form_data
+    )
+
   return {
-    'detected_circles': pts.tolist(), 
-    'originalImage': img_blob.public_url, 
-    'drawnImage': drawn_img_blob.public_url
+    'id': str(inserted_data.inserted_id),
+    'detected_circles': detected_circles, 
+    'originalImage': original_img_url, 
+    'drawnImage': drawn_img_url
     }
 
-def delete_sensor():
-  body = request.json
+def delete_sensor(data_id):
+  user_id = request.environ['user_id']
 
-  bucket.delete_image(body['originalImage'])
-  bucket.delete_image(body['drawnImage'])
+  data_exists = data.find_by_id(data_id)
+
+  if not data_exists:
+    raise Exception('Inexistent_data_error')
+  
+  if user_id != str(data_exists['user_id']):
+    raise Exception('Unauthorized_error')
+
+  bucket.delete_image(data_exists['original_image'])
+  bucket.delete_image(data_exists['drawn_image'])
+
+  data.delete(user_id, data_id)
 
   return {}
 
