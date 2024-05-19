@@ -10,11 +10,6 @@ DetectFormsBodySchema = Schema.from_dict({
     "radiusPercent": fields.String(required=True, allow_none=False)
 })
 
-DetectDelBodySchema = Schema.from_dict({
-    "originalImage": fields.Url(required=True, allow_none=False),
-    "drawnImage": fields.Url(required=True, allow_none=False)
-})
-
 DataBodySchema = Schema.from_dict({
     "modeId": fields.String(required=True, allow_none=False),
     "name": fields.String(required=True, allow_none=False),

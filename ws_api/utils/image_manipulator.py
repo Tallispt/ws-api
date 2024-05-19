@@ -52,7 +52,15 @@ def split(img: Image):
   (B, G, R) = cv2.split(img.image)
   return Image(R), Image(G), Image(B)
 
-def detect_circles(img: Image, radius_percent = 1., kernel=(7,7), min_dist = 40, param_1 = 50, param_2 = 15, min_radius = 1, max_radius = 35, sorting_type = 'h'):
+def detect_circles(
+    img: Image, 
+    radius_percent = 1., 
+    kernel=(7,7), min_dist = 40, 
+    param_1 = 50, param_2 = 15, 
+    min_radius = 1, 
+    max_radius = 35, 
+    sorting_type = 'h'
+    ):
 
   sorting_types = {
     'h': "Horizontal sorting (Default)", 
@@ -210,16 +218,15 @@ def create_maked_spot(pt, img, mask):
   masked_spot = masked_region[pt[1]-(pt[2]+10):pt[1]+(pt[2]+10), pt[0]-(pt[2]+10):pt[0]+(pt[2]+10)]
   return Image(masked_spot)
 
-def return_detected_circles(
-    img_bytes,
-    kernel = (5, 5),
-    min_dist = 45,
-    param_1 = 40,
-    param_2 = 15,
-    min_radius = 1,
-    max_radius = 25,
-    radius_percent = 1
-    ):
+def return_detected_circles(img_bytes, form_data):
+    
+  kernel = (int(form_data['kernel']), int(form_data['kernel']))
+  min_dist = int(form_data['minDist'])
+  param_1 = int(form_data['param1'])
+  param_2 = int(form_data['param2'])
+  min_radius = int(form_data['minRadius'])
+  max_radius = int(form_data['maxRadius'])
+  radius_percent = int(form_data['radiusPercent'])
   
   img = Image(img_bytes)
   resized_image = resize(img)

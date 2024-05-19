@@ -5,11 +5,10 @@ from functools import partial
 from ..services import data
 from ..middlewares.authorization import token_required
 from ..middlewares.validation import validate_body, validate_file, validate_form
-from ..schemas.data import DetectFormsBodySchema, DetectDelBodySchema, DataBodySchema
+from ..schemas.data import DetectFormsBodySchema, DataBodySchema
 
 validate_detection_file = partial(validate_file)
 validate_detection_form = partial(validate_form, schema = DetectFormsBodySchema)
-validate_detection_delete = partial(validate_body, schema = DetectDelBodySchema)
 validate = partial(validate_body, schema = DataBodySchema)
 
 data_bp = Blueprint("data", __name__, url_prefix="/data")
@@ -26,15 +25,19 @@ def detect_data():
     except Exception as e:
         return {'error': str(e)}, HTTPStatus.BAD_REQUEST
     
-@data_bp.route('/detect', methods=['DELETE'])
+@data_bp.route('/detect/<data_id>', methods=['DELETE'])
 @token_required
-@validate_detection_delete
-def delete_detect_data():
+def delete_detect_data(data_id):
     try:
-        response = data.delete_sensor()
-        return response, HTTPStatus.OK
+        response = data.delete_sensor(data_id)
+        return response, HTTPStatus.NO_CONTENT
         
     except Exception as e:
+        if(str(e) == 'Inexistent_data_error'):
+            return {'error': "Item not found."}, HTTPStatus.NOT_FOUND        
+        if(str(e) == 'Unauthorized_error'):
+            return {'error': "Unauthorized_error."}, HTTPStatus.UNAUTHORIZED
+        
         return {'error': str(e)}, HTTPStatus.BAD_REQUEST
     
 @data_bp.route('', methods=['POST'])
