@@ -1,10 +1,11 @@
-from http import HTTPStatus
-from flask import Blueprint
 from functools import partial
+from http import HTTPStatus
 
-from ..services import session
+from flask import Blueprint
+
 from ..middlewares.validation import validate_body
 from ..schemas.user import SignInSchema
+from ..services import session
 
 session_bp = Blueprint("session", __name__, url_prefix="/session")
 

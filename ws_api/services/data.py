@@ -1,7 +1,7 @@
 from flask import request
 
 from ..repositories import data, result
-from ..utils import cammel_snake, bucket
+from ..utils import bucket, cammel_snake
 from ..utils.image_manipulator import return_detected_circles
 
 

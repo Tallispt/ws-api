@@ -1,5 +1,6 @@
-from flask import Blueprint
 from http import HTTPStatus
+
+from flask import Blueprint
 
 health_bp = Blueprint("health", __name__, url_prefix="/health")
 

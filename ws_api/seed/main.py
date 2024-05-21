@@ -1,6 +1,7 @@
 from flask import Flask
-from ..loadenv import config
+
 from ..database import mongo
+from ..loadenv import config
 from .page_seed import seed_page
 
 

@@ -1,10 +1,11 @@
-from flask import Blueprint
-from http import HTTPStatus
 from functools import partial
+from http import HTTPStatus
 
-from ..services.user import create_user
+from flask import Blueprint
+
 from ..middlewares.validation import validate_body
 from ..schemas.user import SignUpSchema
+from ..services.user import create_user
 
 user_bp = Blueprint("users", __name__, url_prefix="/user")
 

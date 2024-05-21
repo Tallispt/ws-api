@@ -1,15 +1,15 @@
 from flask import Flask
 from flask_compress import Compress
-from .loadenv import config
 from flask_cors import CORS
 
-from .database import mongo
 from .bucket import firebase
-from .controllers.health import health_bp
-from .controllers.user import user_bp
-from .controllers.session import session_bp
 from .controllers.data import data_bp
+from .controllers.health import health_bp
 from .controllers.result import result_bp
+from .controllers.session import session_bp
+from .controllers.user import user_bp
+from .database import mongo
+from .loadenv import config
 
 
 def create_app():

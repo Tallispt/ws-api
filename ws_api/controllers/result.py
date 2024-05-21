@@ -1,11 +1,12 @@
-from flask import Blueprint
-from http import HTTPStatus
 from functools import partial
+from http import HTTPStatus
 
-from ..services import result
+from flask import Blueprint
+
 from ..middlewares.authorization import token_required
 from ..middlewares.validation import validate_body
 from ..schemas.result import ResultBodySchema
+from ..services import result
 
 validate = partial(validate_body, schema=ResultBodySchema)
 

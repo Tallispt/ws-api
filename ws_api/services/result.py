@@ -1,8 +1,8 @@
-from flask import request
 from bson import json_util
+from flask import request
 
+from ..repositories import data, result
 from ..services import data as data_service
-from ..repositories import result, data
 from ..utils import cammel_snake
 
 

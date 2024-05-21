@@ -1,7 +1,7 @@
 from flask import request
 
-from ..utils.decode import encode_password
 from ..repositories import user
+from ..utils.decode import encode_password
 
 # from ..seed.mode_seed import Default_regression_mode
 

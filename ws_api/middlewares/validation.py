@@ -1,6 +1,7 @@
-from flask import request
 from functools import wraps
 from http import HTTPStatus
+
+from flask import request
 from marshmallow import ValidationError
 
 

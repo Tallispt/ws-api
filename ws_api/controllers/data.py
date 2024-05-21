@@ -1,11 +1,12 @@
-from flask import Blueprint
-from http import HTTPStatus
 from functools import partial
+from http import HTTPStatus
 
-from ..services import data
+from flask import Blueprint
+
 from ..middlewares.authorization import token_required
 from ..middlewares.validation import validate_body, validate_file, validate_form
 from ..schemas.data import DetectFormsBodySchema
+from ..services import data
 
 validate_detection_file = partial(validate_file)
 validate_detection_form = partial(validate_form, schema=DetectFormsBodySchema)

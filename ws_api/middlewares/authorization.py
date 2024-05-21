@@ -1,5 +1,6 @@
 from functools import wraps
 from http import HTTPStatus
+
 from flask import request
 
 from ..services.session import auth_session
