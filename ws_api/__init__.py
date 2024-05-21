@@ -11,14 +11,15 @@ from .controllers.session import session_bp
 from .controllers.data import data_bp
 from .controllers.result import result_bp
 
+
 def create_app():
     app = Flask(__name__)
     CORS(app)
 
-    app.config['SECRET_KEY'] = config['JWT_SECRET_KEY']
-    app.config['MONGO_URI'] = config['MONGO_URI']
-    app.config['CRED_PATH'] = config['CRED_PATH']
-    app.config['BUCKET_URI'] = config['BUCKET_URI']
+    app.config["SECRET_KEY"] = config["JWT_SECRET_KEY"]
+    app.config["MONGO_URI"] = config["MONGO_URI"]
+    app.config["CRED_PATH"] = config["CRED_PATH"]
+    app.config["BUCKET_URI"] = config["BUCKET_URI"]
     mongo.init_app(app)
     firebase.init_app(app)
 
