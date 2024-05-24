@@ -1,18 +1,41 @@
-from marshmallow import Schema, fields
+from marshmallow import Schema, ValidationError, fields, validate
 
-DetectFormsBodySchema = Schema.from_dict({
-    "kernel": fields.String(required=True, allow_none=False),
-    "minDist": fields.String(required=True, allow_none=False),
-    "param1": fields.String(required=True, allow_none=False),
-    "param2": fields.String(required=True, allow_none=False),
-    "minRadius": fields.String(required=True, allow_none=False),
-    "maxRadius": fields.String(required=True, allow_none=False),
-    "radiusPercent": fields.String(required=True, allow_none=False)
-})
 
-DataBodySchema = Schema.from_dict({
-    "modeId": fields.String(required=True, allow_none=False),
-    "name": fields.String(required=True, allow_none=False),
-    "location": fields.String(required=True, allow_none=False),
-    "files": fields.List(required=True, allow_none=False, cls_or_instance=fields.String())
-})
+def is_odd(value):
+    if value % 2 == 0:
+        raise ValidationError("Not an even value.")
+
+
+DetectFormsBodySchema = Schema.from_dict(
+    {
+        "kernel": fields.Integer(
+            required=True,
+            allow_none=False,
+            validate=validate.And(validate.Range(min=3), is_odd),
+        ),
+        "minDist": fields.Integer(
+            required=True, allow_none=False, validate=validate.Range(min=1, max=200)
+        ),
+        "param1": fields.Integer(
+            required=True, allow_none=False, validate=validate.Range(min=1, max=200)
+        ),
+        "param2": fields.Integer(
+            required=True, allow_none=False, validate=validate.Range(min=1, max=200)
+        ),
+        "minRadius": fields.Integer(
+            required=True, allow_none=False, validate=validate.Range(min=1, max=200)
+        ),
+        "maxRadius": fields.Integer(
+            required=True, allow_none=False, validate=validate.Range(min=1, max=200)
+        ),
+        "radiusPercent": fields.Integer(
+            required=True, allow_none=False, validate=validate.Range(min=1, max=150)
+        ),
+        "sortingType": fields.String(
+            required=True,
+            allow_none=True,
+            default="h",
+            validate=validate.OneOf(["h", "v"]),
+        ),
+    }
+)
