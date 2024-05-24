@@ -1,4 +1,6 @@
 import base64
+import urllib
+
 import cv2
 import numpy as np
 
@@ -31,9 +33,13 @@ class Image:
             )
 
     def _read_image(self, file):
-        image = cv2.imread(file)
+        # image = cv2.imread(file)
+        response = urllib.request.urlopen(file)
+        image = np.asarray(bytearray(response.read()), dtype="uint8")
+        image = cv2.imdecode(image, cv2.IMREAD_COLOR)
         if image is None:
             raise ValueError("Image input address not suported")
+
         return image
 
     def _readb64(self, file):

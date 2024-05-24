@@ -23,6 +23,4 @@ def post_user():
         if str(e) == "Conflict_error":
             return {"error": "User already exists!"}, HTTPStatus.CONFLICT
 
-        print(e)
-
         return {"error": str(e)}, HTTPStatus.BAD_REQUEST

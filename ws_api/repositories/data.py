@@ -5,12 +5,12 @@ from bson import ObjectId
 from ..database import mongo
 
 
-def find_by_id(id):
-    return mongo.db.data.find_one({"_id": ObjectId(id)})
-
-
 def find_by_user_id(id):
-    return mongo.db.data.find({}, {"user_id": ObjectId(id)})
+    return mongo.db.data.find({"user_id": ObjectId(id)})
+
+
+def find_by_id_by_user_id(id, user_id):
+    return mongo.db.data.find_one({"_id": ObjectId(id), "user_id": ObjectId(user_id)})
 
 
 def insert(user_id, original_image, drawn_image, detected_circles, info):

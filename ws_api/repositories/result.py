@@ -6,27 +6,53 @@ from ..database import mongo
 
 
 def find_all(user_id):
-    return mongo.db.result.find({"user_id": ObjectId(user_id)})
+    return mongo.db.result.aggregate(
+        [
+            {"$match": {"user_id": ObjectId(user_id)}},
+            {
+                "$lookup": {
+                    "from": "data",
+                    "localField": "data_id",
+                    "foreignField": "_id",
+                    "as": "data",
+                }
+            },
+            {
+                "$project": {
+                    "_id": 1,
+                    "name": 1,
+                    "location": 1,
+                    "data_id": 1,
+                    "data.original_image": 1,
+                    "created_at": 1,
+                }
+            },
+        ]
+    )
 
 
 def find_by_id(id, user_id):
-    return mongo.db.result.find_one({"_id": ObjectId(id), "user_id": ObjectId(user_id)})
-    # return mongo.db.result.aggregate([
-    #   {
-    #     "$match": {
-    #       "_id": ObjectId(id),
-    #       "user_id": ObjectId(user_id)
-    #     }
-    #   },
-    #   {
-    #     "$lookup": {
-    #       "from": "data",
-    #       "localField": "data_id",
-    #       "foreignField": "_id",
-    #       "as": "data"
-    #     }
-    #   }
-    # ])
+    return mongo.db.result.aggregate(
+        [
+            {"$match": {"_id": ObjectId(id), "user_id": ObjectId(user_id)}},
+            {
+                "$lookup": {
+                    "from": "data",
+                    "localField": "data_id",
+                    "foreignField": "_id",
+                    "as": "data",
+                }
+            },
+            {
+                "$project": {
+                    "user_id": 0,
+                    "data_id": 0,
+                    "data.user_id": 0,
+                    "data.created_at": 0,
+                }
+            },
+        ]
+    )
 
 
 def insert(user_id, data_id, name, location, result_info, result_data):

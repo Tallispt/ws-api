@@ -1,7 +1,7 @@
 from functools import wraps
 from http import HTTPStatus
 
-from flask import request
+from flask import g, request
 from marshmallow import ValidationError
 
 
@@ -14,6 +14,7 @@ def validate_body(func, schema):
             for item in result:
                 if result[item] == "":
                     raise ValidationError("Not allowed blanck value ['" + item + "']")
+            g.body = result
             return func(*args, **kwargs)
         except ValidationError as e:
             return {"error": str(e.messages)}, HTTPStatus.FORBIDDEN

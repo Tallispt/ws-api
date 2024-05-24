@@ -1,6 +1,7 @@
+import base64
+
 import cv2 as cv
 import numpy as np
-import base64
 
 
 def readb64(uri):

@@ -21,7 +21,7 @@ data_bp = Blueprint("data", __name__, url_prefix="/data")
 def detect_data():
     try:
         response = data.detect_sensor()
-        return response, HTTPStatus.OK
+        return response, HTTPStatus.CREATED
 
     except Exception as e:
         return {"error": str(e)}, HTTPStatus.BAD_REQUEST
@@ -37,21 +37,29 @@ def delete_detect_data(data_id):
     except Exception as e:
         if str(e) == "Inexistent_data_error":
             return {"error": "Item not found."}, HTTPStatus.NOT_FOUND
-        if str(e) == "Unauthorized_error":
-            return {"error": "Unauthorized_error."}, HTTPStatus.UNAUTHORIZED
 
         return {"error": str(e)}, HTTPStatus.BAD_REQUEST
 
 
-# @data_bp.route('', methods=['POST'])
-# @token_required
-# @validate
-# def post_data():
-#     try:
-#         response = data.create_data()
-#         return response, HTTPStatus.CREATED
+@data_bp.route("", methods=["GET"])
+@token_required
+def get_all_data():
+    try:
+        response = data.find_all_data()
+        return response, HTTPStatus.OK
 
-#     except Exception as e:
-#         if(str(e) == 'Mode_error'):
-#             return {'error': "Mode does not exist!"}, HTTPStatus.FORBIDDEN
-#         return {'error': str(e)}, HTTPStatus.BAD_REQUEST
+    except Exception as e:
+        return {"error": str(e)}, HTTPStatus.BAD_REQUEST
+
+
+@data_bp.route("/<data_id>", methods=["GET"])
+@token_required
+def get_data(data_id):
+    try:
+        response = data.find_data(data_id)
+        return response, HTTPStatus.OK
+
+    except Exception as e:
+        if str(e) == "Inexistent_data_error":
+            return {"error": "Item not found."}, HTTPStatus.NOT_FOUND
+        return {"error": str(e)}, HTTPStatus.BAD_REQUEST

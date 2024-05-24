@@ -26,7 +26,7 @@ def get_results():
 
 @result_bp.route("/<id>", methods=["GET"])
 @token_required
-def find_result(id):
+def get_result(id):
     try:
         response = result.find_result(id)
         return response, HTTPStatus.OK
@@ -46,6 +46,8 @@ def post_results():
         return response, HTTPStatus.OK
 
     except Exception as e:
+        if str(e) == "Inexistent_data_error":
+            return {"error": "Item not found."}, HTTPStatus.NOT_FOUND
         return {"error": str(e)}, HTTPStatus.BAD_REQUEST
 
 

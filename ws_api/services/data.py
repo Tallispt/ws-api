@@ -1,3 +1,4 @@
+from bson import json_util
 from flask import request
 
 from ..repositories import data, result
@@ -38,13 +39,10 @@ def detect_sensor():
 def delete_sensor(data_id):
     user_id = request.environ["user_id"]
 
-    data_exists = data.find_by_id(data_id)
+    data_exists = data.find_by_id_by_user_id(data_id, user_id)
 
     if not data_exists:
         raise Exception("Inexistent_data_error")
-
-    if user_id != str(data_exists["user_id"]):
-        raise Exception("Unauthorized_error")
 
     bucket.delete_image(data_exists["original_image"])
     bucket.delete_image(data_exists["drawn_image"])
@@ -54,35 +52,31 @@ def delete_sensor(data_id):
     return {}
 
 
-def create_data():
+def find_all_data():
     user_id = request.environ["user_id"]
 
-    body = request.json
-    _body = cammel_snake.convert_json(body)
+    data_data = data.find_by_user_id(user_id)
 
-    # mode_exists = mode.find_by_id(_body["mode_id"], user_id)
-    # if(not mode_exists):
-    #    raise Exception("Mode_error")
+    if not data_data:
+        return []
 
-    # TODO processar os dados
-    info = _body["files"]
+    list_cur = list(data_data)
+    response = json_util.dumps(list_cur)
 
-    # TODO info = {...}
+    return response
 
-    # TODO inserir no banco
-    new_data = data.insert(user_id, info)
 
-    result_data = {
-        "data_id": new_data.inserted_id,
-        "mode_id": _body["mode_id"],
-        "name": _body["name"],
-        "cover": _body["files"][0],
-        "location": _body["location"],
-    }
+def find_data(id):
+    user_id = request.environ["user_id"]
 
-    new_result = result.insert(user_id, result_data)
+    existing_data = data.find_by_id_by_user_id(id, user_id)
 
-    return {"resultId": str(new_result.inserted_id)}
+    if not existing_data:
+        raise Exception("Inexistent_data_error")
+
+    response = json_util.dumps(existing_data)
+
+    return response
 
 
 # TODO Se mode_id e files não forem iguais, refazer result + data (POST)
