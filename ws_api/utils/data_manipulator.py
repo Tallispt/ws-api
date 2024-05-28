@@ -121,12 +121,13 @@ def create_regressions_df(df, channels):
     X = sm.add_constant(X)
 
     channel_dict = dict()
+    plot_regression_dict = dict()
 
     for index, channel in enumerate(channels):
         y = list(df.iloc[:, index * 2 + 1])
-        y_std = list(df.iloc[:, index * 2 + 2])
 
         model = sm.OLS(y, X).fit()
+        predict = model.predict()
 
         summary = {
             "Ang_coef": model.params[1],
@@ -139,11 +140,16 @@ def create_regressions_df(df, channels):
             "t-value_lin": model.tvalues[0],
             "p-value_lin": model.pvalues[0],
         }
+
+        predict_values = {"x": list(df.iloc[:, 0]), "y": np.round(predict, 2).tolist()}
+
         channel_dict[channel] = summary
+        plot_regression_dict[channel] = predict_values
 
     return (
         pd.DataFrame(channel_dict)
         .T.reset_index()
         .rename(columns={"index": "channel"})
-        .round(decimals=5)
+        .round(decimals=5),
+        pd.DataFrame(plot_regression_dict),
     )
