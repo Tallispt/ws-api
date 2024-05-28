@@ -91,18 +91,21 @@ def create_result():
 
         mean_df = dm.create_avs_df(replicate_df)
 
-        regression_df = dm.create_regressions_df(mean_df, channel)
+        regression_df, plot_regressions_df = dm.create_regressions_df(mean_df, channel)
 
         result_data[channel] = {
             "spots": spots_df.to_dict("records"),
             "replicatas": replicate_df.to_dict("records"),
             "means": mean_df.to_dict("records"),
             "regressions": regression_df.to_dict("records"),
+            "plot_means": mean_df.to_dict("list"),
+            "plot_regressions": plot_regressions_df.to_dict("records"),
         }
 
     inserted_result = result.insert(
         user_id, data_id, name, location, info_result, result_data
     )
+    print("oi")
 
     return {"id": str(inserted_result.inserted_id)}
 
